@@ -1,12 +1,12 @@
-type Boundaries = {
+type Boundaries = Readonly<{
   min: number;
   max: number;
-};
+}>;
 
 type RandomGenerator = () => number;
 
-const minmax = ({ min, max }: Boundaries, generator: RandomGenerator): number => {
-  return min + generator() * (max - min);
+const random = ({ min, max }: Boundaries, randomGenerator: RandomGenerator): number => {
+  return min + randomGenerator() * (max - min);
 };
 
-export default minmax;
+export default random;
