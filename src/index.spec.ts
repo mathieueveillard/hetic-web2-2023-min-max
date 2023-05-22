@@ -1,32 +1,20 @@
-// @ts-ignore see https://github.com/jest-community/jest-extended#setup
-import * as matchers from "jest-extended";
 import fc from "fast-check";
+import minmax from ".";
 
-expect.extend(matchers);
-
-test("A simple test (Jest)", () => {
-  expect(1 + 1).toEqual(2);
+test("", () => {
+  expect(minmax({ min: 10, max: 20 }, () => 0)).toEqual(10);
 });
 
-test("Additional matchers (jest-extended)", () => {
-  expect([1, 0]).toIncludeSameMembers([0, 1]);
+test("", () => {
+  expect(minmax({ min: 10, max: 20 }, () => 1)).toEqual(20);
 });
 
-test("Property-based testing (fast-check)", () => {
-  type Boundaries = {
-    min: number;
-    max: number;
-  };
-
-  const minmax =
-    ({ min, max }: Boundaries) =>
-    (n: number): number =>
-      Math.min(max, Math.max(min, n));
-
+test("The returned value should be comprised between min and max", () => {
   fc.assert(
-    fc.property(fc.integer(), (n): boolean => {
-      const result = minmax({ min: 1, max: 10 })(n);
-      return 1 <= result && result <= 10;
+    fc.property(fc.nat(), fc.nat(), (min, max) => {
+      fc.pre(min <= max);
+      const result = minmax({ min, max }, Math.random);
+      return min <= result && result <= max;
     })
   );
 });
